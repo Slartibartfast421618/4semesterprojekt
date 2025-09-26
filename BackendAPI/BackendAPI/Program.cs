@@ -2,11 +2,21 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+//// Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer(); // to use Scalar
-builder.Services.AddSwaggerGen(); // to use scalar 
+// scalar
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+// CORS
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowConfiguredOrigins",
+        policy =>
+        {
+            policy.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod();
+        });
+});
 
 var app = builder.Build();
 
