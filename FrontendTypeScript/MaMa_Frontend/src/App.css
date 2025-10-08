@@ -1,0 +1,218 @@
+#root {
+    max-width: 1920px;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    background-color: var(--bg);
+    color: black;
+    /* https://htmlcolorcodes.com/ 
+        Most any colour used for our styling
+    */
+    --bg: #FAF0EA;
+    --bg_r: #FDE2E2;
+    --fg: #F2C4CA;
+    --card: #F2D6C4;
+    --border: #603215;
+    --buttback: #FDE2E2;
+    --buttbord: #E9B7A5;
+    /* Fonts of the website */
+    --tmane: "Perpetua Titling MT", Perpetua, "Times New Roman", serif;
+    --ttitle: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    --ttext: 'Calibri', sans-serif;
+}
+
+.logo {
+    height: 100%;
+    width: auto;
+    display: block;
+    will-change: filter;
+    transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.navbar {
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1vh;
+    background-color: var(--card);
+    box-sizing: border-box;
+    border-bottom-width: 2px;
+    border-bottom-style: double;
+    border-bottom-color: var(--buttbord);
+    font-size: 2vh;
+}
+    .navbar .spacer {
+        flex: 1;
+    }
+    .navbar a {
+        height: 100%;
+        padding: 8px;
+        display: flex;
+        align-items: center;
+        box-sizing: border-box;
+    }
+    .navbar .stack {
+        height: 100%;
+        width: 20%;
+        font-family: var(--ttitle);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    }
+        .navbar .stack.textbox {
+            width: 30%;
+        }
+        .navbar .stack .name {
+            font-family: var(--tmane);
+            /* won’t go smaller than 16px, grows with viewport width,capped at 2.4em */
+            font-size: clamp(16px, 3vw, 2.4em);
+            align-content: center;
+            height: 70%
+        }
+        .navbar .stack .slogan {
+            font-style: italic;
+            font-size: clamp(12px, 2vw, 1.2em);
+            color: #594A4A;
+            align-content: center;
+            height: 30%;
+            overflow: hidden;
+            min-width: 120px;
+        }
+        .navbar .stack .searchterm {
+            text-align: center;
+            font-size: clamp(12px, 2vw, 1.2em);
+            height: 50%;
+            width: 100%;
+        }
+        .navbar .stack .searchinput {
+            padding: 4px;
+            height: 50%;
+            width: 95%;
+        }
+
+/* hide slogan if space < 120px */
+@media (max-width: 10px) {
+    .navbar .stack .slogan {
+        display: none;
+    }
+}
+
+.split-container {
+    display: flex; /* line up children horizontally */
+}
+.split {
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 8px;
+    height: 90vh;
+}
+    .split.left {
+        flex: 0 0 60%;
+        border-right-width: 2px;
+        border-right-style: double;
+        border-right-color: var(--buttbord);
+    }
+    .split.right {
+        flex: 0 0 40%;
+        background: var(--bg_r);
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+.card {
+    background-color: var(--card);
+    height: clamp(100px, 20vh, 200px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 12px;
+    margin: 8px;
+    font-size: clamp(16px, 2vh, 20px);
+    font-family: var(--ttext);
+    line-height: 1;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    display: flex;
+    box-sizing: border-box;
+}
+    .card .segment_info {
+        font-size: 1.2em;
+        flex: 1 1 22%;
+        min-width: 0;
+    }
+    .card .segment_price {
+        flex: 1 1 27%;
+    }
+    .card .splitter {
+        height: 80%;
+        width: 2px;
+        background-color: var(--buttbord);
+    }
+    .card p {
+        margin: 0px;
+        font-family: var(--ttext);
+    }
+    .card .price {
+        font-size: clamp(12px, 2em, 3em);
+        font-weight: bold;
+    }
+    .card button {
+        background-color: var(--buttback);
+        height: clamp(40px, 8vh, 80px);
+        width: 12vw;
+        border: 1px solid var(--buttbord);
+        border-radius: 8px;
+        padding: 8px;
+        font-size: clamp(12px, 1.2em, 2em);
+        font-family: var(--text);
+        font-weight: bold;
+    }
+
+.test {
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+.test.up {
+    flex: 0 0 10%;
+}
+.test.down {
+    flex: 1 1 auto;
+    overflow: hidden;
+    background-color: black;
+}
+    .test.down img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* fill box, keep aspect, crop edges */
+        object-position: center; /* focus center */
+        display: block;
+    }
