@@ -27,7 +27,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<MaMaDbContext>(options => 
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 // Nominatim 
-builder.Services.AddHttpClient<NominatimGeocodingService>(client =>
+builder.Services.AddHttpClient<NominatimGeocodingService>("NominatimAPI", (sp, client) =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Nominatim:BaseUrl"] ?? "https://nominatim.openstreetmap.org/");
     client.DefaultRequestHeaders.Add("Accept", "application/json");

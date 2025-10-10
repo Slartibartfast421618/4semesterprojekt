@@ -1,4 +1,6 @@
 ﻿using BackendAPI.DTO;
+using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace BackendAPI.Services
 {
@@ -6,16 +8,27 @@ namespace BackendAPI.Services
     {
         private readonly HttpClient _httpClient;
 
-        //constructor
-        public NominatimGeocodingService(HttpClient httpClient) // ift. Troels' - sprunget over Geoclient
+        public NominatimGeocodingService(IHttpClientFactory factory) // has to be factory to work
         {
-            _httpClient = httpClient;
+            _httpClient = factory.CreateClient("NominatimAPI");
         }
 
-        public async Task<GeocodingRespons> GetCoordinatesAsync (CoordinatesDTO coordinatesDTO) // jeg skal hente fra query som jeg gjorde før 
+        public async Task<CoordinatesDTO> GetCoordinatesAsync (string address) 
         {
+            string query = $"search?q={address}&format=json&limit=1";
 
+            HttpResponseMessage httpResponseMessage = await _httpClient.GetAsync(query);
+
+            try
+            {
+                string responseContent = await httpResponseMessage.Content.ReadAsStringAsync();
+                var coordinates = JsonSerializer.Deserialize<List<CoordinatesDTO>>(responseContent);
+                return coordinates.FirstOrDefault();
+            }
+            catch
+            {
+                throw new Exception ("No coordinates");
+            }
         }
-
     }
 }

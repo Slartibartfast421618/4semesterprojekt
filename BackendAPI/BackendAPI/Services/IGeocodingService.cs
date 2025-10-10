@@ -5,6 +5,6 @@ namespace BackendAPI.Services
 {
     public interface IGeocodingService
     {
-        public Task<GeocodingRespons> GetCoordinatesAsync (CoordinatesDTO coordinatesDTO);
+        public Task<CoordinatesDTO> GetCoordinatesAsync (string address);
     }
 }
