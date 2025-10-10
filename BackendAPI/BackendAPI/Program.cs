@@ -1,7 +1,9 @@
 using BackendAPI.Data;
+using BackendAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +26,14 @@ builder.Services.AddCors(options =>
 // Entity Framework connection to DB
 builder.Services.AddDbContext<MaMaDbContext>(options => 
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Nominatim 
+builder.Services.AddHttpClient<NominatimGeocodingService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Nominatim:BaseUrl"] ?? "https://nominatim.openstreetmap.org/");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+    client.DefaultRequestHeaders.Add("User-Agent", "ManeManager");
+});
+builder.Services.AddScoped<IGeocodingService, NominatimGeocodingService>();
 
 var app = builder.Build();
 
