@@ -13,20 +13,23 @@ namespace BackendAPI.Controllers
     {
         private readonly MaMaDbContext _context;
         private readonly IGeocodingService _geocodingService;
+        private readonly ITreatmentService _treatmentService;
 
-        public HairdressersController(MaMaDbContext context, IGeocodingService geocodingService)
+        public HairdressersController(MaMaDbContext context, 
+            IGeocodingService geocodingService, 
+            ITreatmentService treatmentService)
         {
             _context = context;
             _geocodingService = geocodingService;
+            _treatmentService = treatmentService;
         }
 
         // Get All Hairdressers in the DB
-        [HttpGet]
+        [HttpGet , Route("AllHairdressers")]
         public async Task <ActionResult<IEnumerable<HairdresserDTO>>> GetAllHairdressers()
         {
-           // var hairdressers = new List<Hairdresser>();
-            var hairdressers = await _context.Hairdressers.ToListAsync();
-            var hairdressersDTO = hairdressers.Select(x => new HairdresserDTO
+            List<Hairdresser> hairdressers = await _context.Hairdressers.ToListAsync();
+            List<HairdresserDTO> hairdressersDTO = hairdressers.Select(x => new HairdresserDTO
             {
                 ID = x.ID , SalonName = x.SalonName, Website = x.Website, Lat = x.Lat , Lng = x.Lng
             }).ToList();
@@ -43,9 +46,35 @@ namespace BackendAPI.Controllers
             return addressToCoordinates;
         }
 
-        // adresse ind, koordinater + hairdressers ud
-        // brug searchDTO som svar 
-        // HTTPpost
-        // kald Coordinats metode ovenfor, i stedet for at skrive hele kaldet igen ?????? genbrug af kode, men jeg ved ikke hvordan 
+        // Get coordinates, hairdressers, treatments(+ price)  
+        [HttpPost , Route("Search")]
+        public async Task<SearchDTO> GetCoordinatsHairdressersTreatments([FromQuery] string address)
+        {
+            // convert address to coodinats
+            CoordinatesDTO coordinats = await Coordinats(address);
+
+            // converte to range/set distance
+
+            // get hairdressers for DB
+            //// for now - get all 
+            // get treatments and prices - needs to be able to scrape internet directly or a new DB to hold the data 
+            //// for now - dummy randomized data
+            List<Hairdresser> hairdressers = await _context.Hairdressers.ToListAsync();
+            List<HairdresserWithTreatmentsDTO> hairdressersWithTreatmentsDTOs = hairdressers.Select(x => new HairdresserWithTreatmentsDTO
+            {
+                ID = x.ID,
+                SalonName = x.SalonName,
+                Website = x.Website,
+                Lat = x.Lat,
+                Lng = x.Lng,
+                Treatments = _treatmentService.GetRandomDummyTreatments()
+            }).ToList();
+
+            return new SearchDTO
+            {
+                coordinates = coordinats, 
+                hairdressers = hairdressersWithTreatmentsDTOs
+            }; 
+        }
     }
 }
