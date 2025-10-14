@@ -34,6 +34,8 @@ builder.Services.AddHttpClient<NominatimGeocodingService>("NominatimAPI", (sp, c
     client.DefaultRequestHeaders.Add("User-Agent", "ManeManager");
 });
 builder.Services.AddScoped<IGeocodingService, NominatimGeocodingService>();
+// Treatment service
+builder.Services.AddScoped<ITreatmentService, DummyTreatmentService>();
 
 var app = builder.Build();
 
