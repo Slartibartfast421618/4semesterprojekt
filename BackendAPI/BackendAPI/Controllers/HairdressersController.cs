@@ -4,6 +4,7 @@ using BackendAPI.Models;
 using BackendAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace BackendAPI.Controllers
 {
@@ -53,22 +54,39 @@ namespace BackendAPI.Controllers
             // convert address to coodinats
             CoordinatesDTO coordinats = await Coordinats(address);
 
-            // converte to range/set distance
-
             // get hairdressers for DB
-            //// for now - get all 
-            // get treatments and prices - needs to be able to scrape internet directly or a new DB to hold the data 
-            //// for now - dummy randomized data
-            List<Hairdresser> hairdressers = await _context.Hairdressers.ToListAsync();
-            List<HairdresserWithTreatmentsDTO> hairdressersWithTreatmentsDTOs = hairdressers.Select(x => new HairdresserWithTreatmentsDTO
+            //// get within 10 km radius from input address 
+            List<Hairdresser> hairdressers = new();
+            if (double.TryParse(coordinats.Lat, CultureInfo.InvariantCulture , out double latitude) && 
+                double.TryParse(coordinats.Lng, CultureInfo.InvariantCulture , out double longtitude))
             {
-                ID = x.ID,
-                SalonName = x.SalonName,
-                Website = x.Website,
-                Lat = x.Lat,
-                Lng = x.Lng,
-                Treatments = _treatmentService.GetRandomDummyTreatments()
-            }).ToList();
+                hairdressers = await _context.Hairdressers.FromSqlRaw(@"
+                    SELECT * FROM ""Hairdressers""
+                    WHERE ST_DWithin(   geography(ST_MakePoint(""Lng"", ""Lat"")),
+                                        geography(ST_MakePoint({0}, {1})),
+                    {2} * 1000)", longtitude, latitude, 10).ToListAsync();
+            }
+            else
+            {
+                // Get all hairdressers, så the list is full - TEMPORARY
+                    // not a good solution with a database with many datapoints 
+                hairdressers = await _context.Hairdressers.ToListAsync();
+                // alternative 
+                //hairdressers = null; 
+            }
+
+            // convert List<Hairdresser> to List<HairdresserWithTreatmentDTO> and get tratments + prices           
+            List<HairdresserWithTreatmentsDTO> hairdressersWithTreatmentsDTOs = hairdressers.Select(x => new HairdresserWithTreatmentsDTO
+                {
+                    ID = x.ID,
+                    SalonName = x.SalonName,
+                    Website = x.Website,
+                    Lat = x.Lat,
+                    Lng = x.Lng,
+                    // get treatments and prices - needs to be able to scrape internet directly or a new DB to hold the data 
+                    //// for now - dummy randomized data -> long term being able to scrape or get the apropriate data from the db (if saved)
+                    Treatments = _treatmentService.GetRandomDummyTreatments()
+                }).ToList();
 
             return new SearchDTO
             {
