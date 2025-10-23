@@ -51,7 +51,7 @@
 }
 
 .navbar {
-    height: 10vh;
+    height: min(10vh, 80px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -61,7 +61,7 @@
     border-bottom-width: 2px;
     border-bottom-style: double;
     border-bottom-color: var(--buttbord);
-    font-size: 2vh;
+    font-size: min(2vh, 20px);
 }
     .navbar .spacer {
         flex: 1;
@@ -146,7 +146,7 @@
 
 .card {
     background-color: var(--card);
-    height: clamp(100px, 20vh, 200px);
+    height: clamp(120px, 20vh, 200px);
     border: 1px solid var(--border);
     border-radius: 20px;
     padding: 12px;
@@ -180,7 +180,7 @@
         font-family: var(--ttext);
     }
     .card .price {
-        font-size: clamp(12px, 2em, 3em);
+        font-size: clamp(16px, 2em, 3em);
         font-weight: bold;
     }
     .card button {
