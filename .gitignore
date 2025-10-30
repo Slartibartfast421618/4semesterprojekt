@@ -23,3 +23,6 @@ README.md
 # Things you don't want others to know about
 appsettings.*
 launchSettings.*
+
+#testprojects
+watchdogTest/
