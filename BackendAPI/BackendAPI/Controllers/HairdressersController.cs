@@ -5,6 +5,7 @@ using BackendAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using System.Net;
 
 namespace BackendAPI.Controllers
 {
@@ -93,6 +94,36 @@ namespace BackendAPI.Controllers
                 coordinates = coordinats, 
                 hairdressers = hairdressersWithTreatmentsDTOs
             }; 
+        }
+
+        // Add hairdressers to DB
+        [HttpPost]
+        public async Task<ActionResult> AddHairdressers([FromBody] HairdresserAddDTO addDTO)
+        {
+            // validation of input (addDTO)
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+
+            else
+            {
+                // convert adress to coordinats
+                CoordinatesDTO coordinats = await Coordinats(addDTO.Address);
+
+                // create hairdresser object
+                var hairdresser = new Hairdresser
+                {
+                    SalonName = addDTO.SalonName,
+                    Website = addDTO.Website,
+                    Lat = double.Parse(coordinats.Lat, CultureInfo.InvariantCulture), // without try - missing som error handling 
+                    Lng = double.Parse(coordinats.Lng, CultureInfo.InvariantCulture)
+                };
+
+                // send hairdresserobjekt to DB
+                _context.Hairdressers.Add(hairdresser); // input hairdresser to local DbContext memory
+                await _context.SaveChangesAsync(); // sending changes to DB
+
+                // respons to client "created"
+                return StatusCode(201);
+            }
         }
     }
 }
