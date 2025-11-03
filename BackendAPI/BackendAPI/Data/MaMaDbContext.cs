@@ -5,11 +5,10 @@ namespace BackendAPI.Data
 {
     public class MaMaDbContext(DbContextOptions<MaMaDbContext> options) : DbContext(options)
     {
-        // lav en test tabel og se om den kommer ned på databasen 
-
+        // tabels on the DB
         public DbSet<Hairdresser> Hairdressers => Set<Hairdresser>();
 
-        // dummy data - test if connection to DB
+        // dummy data - test for connection to DB
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
