@@ -15,6 +15,8 @@
     --border: #603215;
     --buttback: #FDE2E2;
     --buttbord: #E9B7A5;
+    --buttbackhover: #FDEDED;
+    --buttbordhover: #DD8B74;
     /* Fonts of the website */
     --tmane: "Perpetua Titling MT", Perpetua, "Times New Roman", serif;
     --ttitle: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -193,6 +195,11 @@
         font-size: clamp(12px, 1.2em, 2em);
         font-family: var(--text);
         font-weight: bold;
+        cursor: pointer;
+    }
+    .card button:hover {
+        background-color: var(--buttbackhover);
+        border: 1px solid var(--buttbordhover);
     }
 
 .test {
