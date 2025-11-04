@@ -1,14 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRequestGate } from "./utility/Debounce";
+import { useHairdresserSearch } from "./components/useHairdressersSearch";
 import Navbar from "./components/Navbar";
 import Card from "./components/Card";
 import fakeMap from './assets/fake_maps.png';
 import './App.css';
 
 function App() {
-
+    // Navbar input
     const [place, setPlace] = useState("");
     const [start, setStart] = useState("");
     const [end, setEnd] = useState("");
+    // Input trigger
+    const gatedPlace = useRequestGate(place);
+    // API handling
+    const { data, loading, error } = useHairdresserSearch(gatedPlace);
 
     return (
         <>
@@ -23,13 +29,23 @@ function App() {
             <div className="split-container">
                 <div className="split left">
                   <p>Navn - Distance - Ledige tider - Priser fra</p>
-                  <Card
-                      name={"Kalle's Klippere"}
-                      distance={3}
-                      availableTimeslots={13}
-                      price={99}
-                      website={"https://www.google.com/"}
-                  />
+                    {loading && <p>Loading results…</p>}
+                    {error && <p style={{ color: "red" }}>{error}</p>}
+
+                    {!loading && !error && data && data.length > 0 ? (
+                        data.map((h, index) => (
+                            <Card
+                                key={index}
+                                name={h.salonName ?? "Ukjent salong"}
+                                distance={h.distance ?? 0}
+                                availableTimeslots={0} // placeholder for now
+                                price={h.price ?? 0}
+                                website={h.website ?? ""}
+                            />
+                        ))
+                    ) : (
+                        !loading && !error && <p>No results found.</p>
+                    )}
                   <Card
                       name={"KlipKlapperne"}
                       distance={5}

@@ -2,8 +2,8 @@
 
 type CardProps = {
     name: string;
-    distance: int;
-    availableTimeslots: int;
+    distance: number;
+    availableTimeslots: number;
     price: number;
     website: string;
 };
