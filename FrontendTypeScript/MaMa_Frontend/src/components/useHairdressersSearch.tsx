@@ -72,10 +72,9 @@ export function useHairdresserSearch(address: string) {
                     .sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity));
                 setData(views);
 
-            } catch (e) {
-                if ((e as any).name !== "AbortError") {
-                    setError((e as Error).message);
-                }
+            } catch (e: unknown) {
+                if (e instanceof DOMException && e.name === "AbortError") return;
+                setError(e instanceof Error ? e.message : String(e));
             } finally {
                 setLoading(false);
             }
