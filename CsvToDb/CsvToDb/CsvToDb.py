@@ -1,4 +1,5 @@
 import pandas as pd
+import requests
 
 # read csv fil - give directions to fil location
     # MUST BE SET FOR YOU PERSONALY
@@ -26,10 +27,13 @@ def build_dto(row):
 
 dtoList = [build_dto(row) for _, row in df.iterrows()]
 
-# test to view the transformed data format
+# test to view the transformed data format - CAN BE DELETED IN THE END
 for dto in dtoList: print (dto)
 
-# POST to API
+# POST request to API 
+API_URL = "https://localhost:7001/api/Hairdressers"
+headers = {'Content-Type': 'application/json'}
 
-
-
+for dto in dtoList:
+    response = requests.post(API_URL, json=dto, headers=headers, verify=False)  # verify=False kun til lokal dev!
+    print(response.status_code, response.text)
