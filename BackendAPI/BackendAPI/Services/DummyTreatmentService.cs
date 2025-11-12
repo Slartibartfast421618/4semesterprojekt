@@ -24,7 +24,7 @@ namespace BackendAPI.Services
             return _treatmentAndPrice.Select( t => new TreatmentDTO
             {
                 TreatmentType = t.Key, 
-                TreatmentPrice = Math.Ceiling(RandomDecimal ( t.Value.min , t.Value.max ))
+                TreatmentPrice = RandomDecimal ( t.Value.min , t.Value.max )
             }).ToList();
         }
 
@@ -38,15 +38,16 @@ namespace BackendAPI.Services
             return shuffled.Select(t => new TreatmentDTO
             {
                 TreatmentType = t.Key,
-                TreatmentPrice = Math.Ceiling(RandomDecimal(t.Value.min, t.Value.max))
+                TreatmentPrice = RandomDecimal(t.Value.min, t.Value.max)
             }).ToList();
         }
 
         // randomize the price within the range
         private decimal RandomDecimal (decimal min , decimal max)
         {
-            return min + (max - min) * (decimal)_random.NextDouble();
+            return Math.Ceiling(min + (max - min) * (decimal)_random.NextDouble());
                 // (decimal)_random.NextDouble() generates a number between 0.0 and 1.0
+                // Math.Ceiling rounds the number up
         }
     }
 }
