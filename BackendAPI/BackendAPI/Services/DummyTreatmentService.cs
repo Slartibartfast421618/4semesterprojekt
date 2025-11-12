@@ -1,4 +1,4 @@
-﻿using BackendAPI.DTO;
+using BackendAPI.DTO;
 
 namespace BackendAPI.Services
 {
@@ -24,7 +24,7 @@ namespace BackendAPI.Services
             return _treatmentAndPrice.Select( t => new TreatmentDTO
             {
                 TreatmentType = t.Key, 
-                TreatmentPrice = RandomDecimal ( t.Value.min , t.Value.max )
+                TreatmentPrice = Math.Ceiling(RandomDecimal ( t.Value.min , t.Value.max ))
             }).ToList();
         }
 
@@ -38,7 +38,7 @@ namespace BackendAPI.Services
             return shuffled.Select(t => new TreatmentDTO
             {
                 TreatmentType = t.Key,
-                TreatmentPrice = RandomDecimal(t.Value.min, t.Value.max)
+                TreatmentPrice = Math.Ceiling(RandomDecimal(t.Value.min, t.Value.max))
             }).ToList();
         }
 
