@@ -8,6 +8,8 @@ export default function useFilteredHairdressers(
     return useMemo(() => {
         if (!data) return null;
         if (!chosenTreatment) return data;
-        return data.filter(h => h.treatments?.includes(chosenTreatment));
+        return data.filter(h =>
+            h.treatments?.some(t => t.treatmentType === chosenTreatment)
+        );
     }, [data, chosenTreatment]);
 }

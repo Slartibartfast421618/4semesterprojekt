@@ -1,30 +1,27 @@
 import type { HairdresserView } from "../hooks/useHairdressersSearch"
-
-type CardProps = {
-    name: string;
-    distance: number;
-    availableTimeslots: number;
-    price: number;
-    website: string;
-};
+import getPrice from "../utility/getPrice";
 
 type CardData = {
-    data: HairdresserView;
+    fData: HairdresserView;
+    cTreatment: string | null;
 }
 
 export default function Card({
-    data,
+    fData,
+    cTreatment,
 }: CardData) {
+    const price = getPrice(fData, cTreatment);
+
     return (
         <div className="card">
             <div className="segment_info">
                 <p>
-                    {data.salonName}
+                    {fData.salonName}
                 </p>
             </div>
             <div className="segment_info">
                 <p>
-                    {data.distance}km
+                    {fData.distance}km
                 </p>
             </div>
             <div className="segment_info">
@@ -42,10 +39,10 @@ export default function Card({
                     fra
                 </p>
                 <p className="price">
-                    {data.treatments}kr
+                    {price !== null ? `${price}kr` : "-"}
                 </p>
                 <button type="button" 
-                    onClick={() => window.open(website, "_blank")}
+                    onClick={() => window.open(fData.website ?? "", "_blank")}
                 >
                     Se mere!
                 </button>
