@@ -47,11 +47,12 @@ function App() {
                         filteredData.map((h, index) => (
                             <Card
                                 key={index}
-                                name={h.salonName ?? "Ukjent salong"}
-                                distance={h.distance ?? 7777777}
-                                availableTimeslots={0} // placeholder for now
-                                price={h.price ?? 7777777}
-                                website={h.website ?? ""}
+                                data={data}
+                                //name={h.salonName ?? "Ukjent salong"}
+                                //distance={h.distance ?? 7777777}
+                                //availableTimeslots={0} // placeholder for now
+                                //price={h.price ?? 7777777}
+                                //website={h.website ?? ""}
                             />
                         ))
                     ) : (

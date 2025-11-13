@@ -1,4 +1,4 @@
-
+import type { HairdresserView } from "../hooks/useHairdressersSearch"
 
 type CardProps = {
     name: string;
@@ -8,28 +8,29 @@ type CardProps = {
     website: string;
 };
 
+type CardData = {
+    data: HairdresserView;
+}
+
 export default function Card({
-    name,
-    distance,
-    availableTimeslots,
-    price,
-    website,
-}: CardProps) {
+    data,
+}: CardData) {
     return (
         <div className="card">
             <div className="segment_info">
                 <p>
-                    {name}
+                    {data.salonName}
                 </p>
             </div>
             <div className="segment_info">
                 <p>
-                    {distance}km
+                    {data.distance}km
                 </p>
             </div>
             <div className="segment_info">
                 <p>
-                    {availableTimeslots}
+                    {/*{data.availableTimeslots}*/}
+                    {7777777} {/*Placeholder number*/}
                 </p>
                 <p>
                     ledige tider
@@ -41,7 +42,7 @@ export default function Card({
                     fra
                 </p>
                 <p className="price">
-                    {price}kr
+                    {data.treatments}kr
                 </p>
                 <button type="button" 
                     onClick={() => window.open(website, "_blank")}

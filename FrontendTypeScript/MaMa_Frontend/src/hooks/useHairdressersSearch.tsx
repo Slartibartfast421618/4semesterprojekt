@@ -17,30 +17,33 @@ export interface HairdresserView {
     salonName: string | null;
     website: string | null;
     distance: number | null;    // Using lng as placeholder
-    price: number | null;       // Lowest treatmentPrice
-    treatments: string[] | null;      // List of treatments for dropdown
+    //price: number | null;       // Lowest treatmentPrice
+    treatments?: {
+        treatmentType: string | null,
+        treatmentPrice: number | null
+    }[] | null;
 }
 
 function toView(h: ApiHairdresser): HairdresserView {
     const distance = h.lng ?? null; // Set lng to distance placeholder
 
-    // compute lowest price across treatments
-    const price = h.treatments && h.treatments.length ? h.treatments
-        .map(t => t?.treatmentPrice ?? null)
-        .filter((n): n is number => n !== null)
-        .reduce<number | null>((min, n) => (min === null ? n : Math.min(min, n)), null) : null;
-    const treatments = h.treatments && h.treatments.length ? h.treatments
-        .map(t => t?.treatmentType ?? null)
-        .filter((name): name is string => !!name)   // Removing null/undefined/empty
-        : null;
-    console.log("API treatments:", h.treatments);
-    console.log("Transformed treatments:", treatments);
+    // Find lowest price across treatments
+    //const price = h.treatments && h.treatments.length ? h.treatments
+    //    .map(t => t?.treatmentPrice ?? null)
+    //    .filter((n): n is number => n !== null)
+    //    .reduce<number | null>((min, n) => (min === null ? n : Math.min(min, n)), null) : null;
+
+
+    //const treatments = h.treatments && h.treatments.length ? h.treatments
+    //    .map(t => t?.treatmentType ?? null)
+    //    .filter((name): name is string => !!name)   // Removing null/undefined/empty
+    //    : null;
+    
     return {
         salonName: h.salonName,
         website: h.website ?? null,
         distance,
-        price,
-        treatments,
+        treatments: h.treatments ?? null,
     };
 }
 
@@ -90,17 +93,16 @@ export default function useHairdresserSearch(address: string) {
         return () => ctrl.abort();
     }, [address]);
 
-    // Set list of unique treatments
+    // Extract list of unique treatments
     const allTreatments = useMemo(() => {
         return (
             data?.flatMap(h => h.treatments ?? [])
-                .filter((t): t is string => !!t)
+                .filter(t => !!t.treatmentType)
+                .map((t) => t.treatmentType as string)
                 .filter((t, i, arr) => arr.indexOf(t) === i)
             ?? []
         );
     }, [data]);
-    console.log("Hook data:", data);
-    console.log("Hook allTreatments:", allTreatments);
 
     return { data, allTreatments, loading, error };
 }
