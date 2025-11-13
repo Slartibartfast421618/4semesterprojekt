@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useRequestGate } from "./utility/Debounce";
-import { useHairdresserSearch } from "./components/useHairdressersSearch";
+import useHairdresserSearch from "./hooks/useHairdressersSearch";
+import useFilteredHairdressers from "./hooks/useFilteredHairddressers";
+import TreatmentDropdown from "./components/TreatmentDropdown";
 import Navbar from "./components/Navbar";
 import Card from "./components/Card";
 import fakeMap from './assets/fake_maps.png';
@@ -14,32 +16,41 @@ function App() {
     // Input trigger
     const gatedPlace = useRequestGate(place);
     // API handling
-    const { data, loading, error } = useHairdresserSearch(gatedPlace);
+    const { data, allTreatments, loading, error } = useHairdresserSearch(gatedPlace);
+    // Dropdown filtering
+    const [chosenTreatment, setChosenTreatment] = useState("");
+    useEffect(() => { setChosenTreatment(""); }, [data]);
+    const filteredData = useFilteredHairdressers(data, chosenTreatment) ?? [];
 
     return (
         <>
             <Navbar
                 place={place}
-                start={start}
-                end={end}
+                dateEarliest={start}
+                dateLatest={end}
                 onPlaceChange={setPlace}
-                onStartChange={setStart}
-                onEndChange={setEnd}
+                onDateEarliestChange={setStart}
+                onDateLatestChange={setEnd}
             />
             <div className="split-container">
                 <div className="split left">
-                  <p>Navn - Distance - Ledige tider - Priser fra</p>
+                    
+                    <p>Navn - Distance - Ledige tider - Priser fra</p>
+                    <TreatmentDropdown
+                        treatments={allTreatments}
+                        selected={chosenTreatment}
+                        onChange={setChosenTreatment}
+                    />
                     {loading && <p>Loading results…</p>}
                     {error && <p style={{ color: "red" }}>{error}</p>}
-
                     {!loading && !error && data && data.length > 0 ? (
-                        data.map((h, index) => (
+                        filteredData.map((h, index) => (
                             <Card
                                 key={index}
                                 name={h.salonName ?? "Ukjent salong"}
-                                distance={h.distance ?? 0}
+                                distance={h.distance ?? 7777777}
                                 availableTimeslots={0} // placeholder for now
-                                price={h.price ?? 0}
+                                price={h.price ?? 7777777}
                                 website={h.website ?? ""}
                             />
                         ))

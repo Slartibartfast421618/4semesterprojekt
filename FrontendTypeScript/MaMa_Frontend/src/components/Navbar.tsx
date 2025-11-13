@@ -3,20 +3,20 @@ import mamaLogo from "../assets/manemanager_nbg_close.png";
 
 type NavbarProps = {
     place: string;
-    start: string;
-    end: string;
+    dateEarliest: string;
+    dateLatest: string;
     onPlaceChange: (v: string) => void;
-    onStartChange: (v: string) => void;
-    onEndChange: (v: string) => void;
+    onDateEarliestChange: (v: string) => void;
+    onDateLatestChange: (v: string) => void;
 };
 
 export default function Navbar({
     place,
-    start,
-    end,
+    dateEarliest,
+    dateLatest,
     onPlaceChange,
-    onStartChange,
-    onEndChange,
+    onDateEarliestChange,
+    onDateLatestChange,
 }: NavbarProps) {
     return (
         <div className="navbar">
@@ -42,21 +42,21 @@ export default function Navbar({
             </div>
 
             <div className="stack">
-                <span className="searchterm">DateOnly start</span>
+                <span className="searchterm">DateStart</span>
                 <input
                     className="searchinput"
-                    value={start}
-                    onChange={(e) => onStartChange(e.target.value)}
+                    value={dateEarliest}
+                    onChange={(e) => onDateEarliestChange(e.target.value)}
                     placeholder="YYYY-MM-DD"
                 />
             </div>
 
             <div className="stack">
-                <span className="searchterm">DateOnly end</span>
+                <span className="searchterm">DateEnd</span>
                 <input
                     className="searchinput"
-                    value={end}
-                    onChange={(e) => onEndChange(e.target.value)}
+                    value={dateLatest}
+                    onChange={(e) => onDateLatestChange(e.target.value)}
                     placeholder="YYYY-MM-DD"
                 />
             </div>
