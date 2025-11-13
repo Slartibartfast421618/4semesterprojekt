@@ -17,6 +17,11 @@ namespace BackendAPI.Controllers
         private readonly IGeocodingService _geocodingService;
         private readonly ITreatmentService _treatmentService;
 
+        /* used to control how many usage of the GetCoordinats endpoint at the time
+         * and delay between usage*/
+        private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1); // only one instanse
+        private static DateTime _lastCall = DateTime.MinValue;
+
         public HairdressersController(MaMaDbContext context, 
             IGeocodingService geocodingService, 
             ITreatmentService treatmentService)
@@ -42,10 +47,25 @@ namespace BackendAPI.Controllers
         [HttpPost , Route("getCoordinates")]
         public async Task<CoordinatesDTO> Coordinats ([FromQuery] string address)
         {
-            CoordinatesDTO addressToCoordinates = new CoordinatesDTO();
-            addressToCoordinates = await _geocodingService.GetCoordinatesAsync(address);
+            await _semaphore.WaitAsync();
+            try
+            {
+                var timeSinceLastCall = DateTime.UtcNow - _lastCall;
+                if (timeSinceLastCall < TimeSpan.FromSeconds(1))
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(1) - timeSinceLastCall);
+                }
 
-            return addressToCoordinates;
+                CoordinatesDTO addressToCoordinates = await _geocodingService.GetCoordinatesAsync(address);
+
+                _lastCall = DateTime.UtcNow;
+
+                return addressToCoordinates;
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
         }
 
         // Get coordinates, hairdressers, treatments(+ price)  

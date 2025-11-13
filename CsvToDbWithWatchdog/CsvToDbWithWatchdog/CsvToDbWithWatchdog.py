@@ -95,7 +95,7 @@ if __name__ == "__main__":
     
     try: 
         while True: # infinity loop, with 60 seconds delay 
-            time.sleep(60)
+            time.sleep(1)
     except KeyboardInterrupt: # whene Ctrl+C pressed
         observer.stop()
     observer.join() # full clean up of threads before closing the script. 
