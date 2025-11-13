@@ -11,7 +11,7 @@ def csv_to_db (file_path):
     print(f"\nthe file: {file_path}")
 
     # wanted columns from csvFile
-    NeedColumns = ['Frisør' , 'Adresse' , 'Adresse 2' , 'Hjemmeside']
+    NeedColumns = ['FrisÃ¸r' , 'Adresse' , 'Adresse 2' , 'Hjemmeside']
 
     # data frame , df
     df = pd.read_csv(file_path , delimiter=';', usecols=NeedColumns)
@@ -25,7 +25,7 @@ def csv_to_db (file_path):
     # Build DTO to API call from rows in df
     def build_dto(row):
         return {
-            "salonName": row['Frisør'],
+            "salonName": row['FrisÃ¸r'],
             "website": row['Hjemmeside'],
             "address": row['fullAddress']
         }
@@ -46,7 +46,7 @@ def csv_to_db (file_path):
     # TEST THAT CAN BE TAKEN AWAY IN THE END
     print(f"\nTransfor done: {len(dtoList)} files transported.")
 
-# help funktion: check if the file is finished writing = file size 
+# help function: check if the file is finished writing = file size 
 def wait_until_file_is_ready (file_path, timeout=5):
     last_size = -1 # negative to always trigger 1 run of the if statement. 
 
@@ -69,4 +69,33 @@ def wait_until_file_is_ready (file_path, timeout=5):
     print(f"The file '{file_path}' did not get stabil before timeout")
     return False
 
+# watchdog event handler 
+class CsvHandler(FileSystemEventHandler):
+    def on_created(self, event):
+        # only react on new csv files in the folder
+        if not event.is_directory and event.src_path.lower().endswith(".csv"):
+            print(f"\n New CSV: {event.src_path}")
+
+            # check if file is ready
+            if wait_until_file_is_ready(event.src_path):
+                csv_to_db(event.src_path)
+            else:
+                print (f"File {event.src_path} not able to be read, because of timeout from check if file is ready.")
+
 # watchdog observation
+if __name__ == "__main__":
+    folder_to_watch = 'C:\\Users\\trine\\source\\repos\\4semesterprojekt\\CsvToDb\\HairdresserCsv'
+    event_handler = CsvHandler()
+    observer = Observer()
+    observer.schedule(event_handler, folder_to_watch, recursive=False) # (where to watch, what to do, only this folder/no sub folders )
+    observer.start()
+
+    print(f"Watching {folder_to_watch}. ")
+    print("Press Ctrl+c to close the script.\n")
+    
+    try: 
+        while True: # infinity loop, with 60 seconds delay 
+            time.sleep(60)
+    except KeyboardInterrupt: # whene Ctrl+C pressed
+        observer.stop()
+    observer.join() # full clean up of threads before closing the script. 
