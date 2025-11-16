@@ -2,6 +2,7 @@ import os
 import time
 import pandas as pd
 import requests
+from pathlib import Path
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
@@ -84,10 +85,17 @@ class CsvHandler(FileSystemEventHandler):
 
 # watchdog observation
 if __name__ == "__main__":
-    folder_to_watch = 'C:\\Users\\trine\\source\\repos\\4semesterprojekt\\CsvToDb\\HairdresserCsv'
+    # the folder to watch
+    base_dir = Path(__file__).resolve().parents[1]
+    folder_to_watch = base_dir / "HairdresserCsv"
+
+    # if the folder to watch do not exist
+    if not folder_to_watch.exists():
+        raise FileNotFoundError(f"Folder not found: {folder_to_watch}")
+
     event_handler = CsvHandler()
     observer = Observer()
-    observer.schedule(event_handler, folder_to_watch, recursive=False) # (where to watch, what to do, only this folder/no sub folders )
+    observer.schedule(event_handler, str(folder_to_watch), recursive=False) # (where to watch, what to do, only this folder/no sub folders )
     observer.start()
 
     print(f"Watching {folder_to_watch}. ")
@@ -95,7 +103,7 @@ if __name__ == "__main__":
     
     try: 
         while True: # infinity loop, with 60 seconds delay 
-            time.sleep(1)
+            time.sleep(60)
     except KeyboardInterrupt: # whene Ctrl+C pressed
         observer.stop()
     observer.join() # full clean up of threads before closing the script. 

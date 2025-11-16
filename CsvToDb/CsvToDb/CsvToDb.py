@@ -1,9 +1,11 @@
+from pydoc import resolve
 import pandas as pd
 import requests
+from pathlib import Path
 
-# read csv fil - give directions to fil location
-    # MUST BE SET FOR YOU PERSONALY
-csvFile = 'C:\\Users\\trine\\source\\repos\\4semesterprojekt\\CsvToDb\\HairdresserCsv\\5FrisørMedHjemmesider.csv'
+# csv file
+base_dir = Path(__file__).resolve().parents[1]
+csvFile = base_dir / "HairdresserCsv" / "5FrisørMedHjemmesider.csv"
 
 # wanted columns from csvFile
 NeedColumns = ['Frisør' , 'Adresse' , 'Adresse 2' , 'Hjemmeside']
@@ -30,10 +32,10 @@ dtoList = [build_dto(row) for _, row in df.iterrows()]
 # test to view the transformed data format - CAN BE DELETED IN THE END
 for dto in dtoList: print (dto)
 
-# POST request to API 
-API_URL = "https://localhost:7001/api/Hairdressers"
-headers = {'Content-Type': 'application/json'}
+# # POST request to API 
+# API_URL = "https://localhost:7001/api/Hairdressers"
+# headers = {'Content-Type': 'application/json'}
 
-for dto in dtoList:
-    response = requests.post(API_URL, json=dto, headers=headers, verify=False)  # verify=False kun til lokal dev!
-    print(response.status_code, response.text)
+# for dto in dtoList:
+#     response = requests.post(API_URL, json=dto, headers=headers, verify=False)  # verify=False kun til lokal dev!
+#     print(response.status_code, response.text)
