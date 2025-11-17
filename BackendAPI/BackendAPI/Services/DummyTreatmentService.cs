@@ -1,4 +1,4 @@
-﻿using BackendAPI.DTO;
+using BackendAPI.DTO;
 
 namespace BackendAPI.Services
 {
@@ -45,8 +45,9 @@ namespace BackendAPI.Services
         // randomize the price within the range
         private decimal RandomDecimal (decimal min , decimal max)
         {
-            return min + (max - min) * (decimal)_random.NextDouble();
+            return Math.Ceiling(min + (max - min) * (decimal)_random.NextDouble());
                 // (decimal)_random.NextDouble() generates a number between 0.0 and 1.0
+                // Math.Ceiling rounds the number up
         }
     }
 }
