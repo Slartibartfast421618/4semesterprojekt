@@ -27,4 +27,7 @@ launchSettings.*
 #testprojects
 watchdogTest/
 
+#Nobody neads to know
+processed_files.json
+
 
